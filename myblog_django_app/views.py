@@ -68,7 +68,7 @@ def article_get(request):
             'markdown.extensions.toc'
         ])
         body = md.convert(article.body)
-        print(body)
+        # print(body)
         article_dict = {
             'id': article.id,
             'weight': article.weight,

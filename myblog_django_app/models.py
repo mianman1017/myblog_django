@@ -34,3 +34,9 @@ class ArticleInfo(models.Model):
     def get_imgUrl(self):
         MEDIA_ADDR = 'http://localhost:8000/media/'
         return MEDIA_ADDR + str(self.img)
+
+
+# 用户表
+class UserInfo(models.Model):
+    email = models.CharField(verbose_name='邮箱', max_length=32)
+    password = models.CharField(verbose_name='密码', max_length=16)
