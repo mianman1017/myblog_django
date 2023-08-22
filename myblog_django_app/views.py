@@ -1,12 +1,11 @@
 from django.http import FileResponse, JsonResponse
-from myblog_django_app.models import ArticleInfo
-from django.core import serializers
+from myblog_django_app.models import ArticleInfo, UserInfo
 from django.views.decorators.csrf import csrf_exempt
+from random import random
 import markdown
-from django.utils.text import slugify
-from markdown.extensions.toc import TocExtension
-import os
-import base64
+import re
+import smtplib
+from email.mime.text import MIMEText
 
 # Create your views here.
 
@@ -44,7 +43,7 @@ def articlelist_get(request):
         # 返回 JSON 数据
         return JsonResponse({'data': article_list, 'success': True})
 
-    return JsonResponse({'success': False, 'msg': 'Invalid request method'})
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
 
 
 @csrf_exempt
@@ -52,12 +51,12 @@ def article_get(request):
     if request.method == 'POST':
         # 从前端请求中获取偏移值
         id = int(request.POST.get('id', 0))
-        print(id)
+        # print(id)
 
         # 取出从偏移值开始的博客文章
-        print(ArticleInfo.objects.all().first().id)  # 打印出来的结果为1
+        # print(ArticleInfo.objects.all().first().id)  # 打印出来的结果为1
         article = ArticleInfo.objects.filter(id=id).first()
-        print(article.id)
+        # print(article.id)
 
         # 构造 JSON 数据
         tags = article.tags.split(',') if article.tags else []
@@ -88,4 +87,39 @@ def article_get(request):
         # 返回 JSON 数据
         return JsonResponse({'data': article_dict, 'success': True})
 
-    return JsonResponse({'success': False, 'msg': 'Invalid request method'})
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
+
+
+# 邮箱格式验证的正则表达式
+EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
+
+
+@csrf_exempt
+def user_add(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # 检查邮箱格式是否有效
+        if not re.match(EMAIL_REGEX, email):
+            return JsonResponse({'success': False, 'message': '邮箱格式错误'})
+
+        # 使用SMTP验证检查邮箱是否真实存在
+        if not is_valid_email(email):
+            return JsonResponse({'success': False, 'message': '邮箱不存在'})
+
+        UserInfo.objects.create(email=email, password=password)
+
+        return JsonResponse({'success': True, 'message': '成功创建用户'})
+
+    return JsonResponse({'success': False, 'message': '不是POST请求'})
+
+
+def is_valid_email(email):
+    try:
+        server = smtplib.SMTP('smtp.aliyun.com')  # 替换为你的SMTP服务器
+        server.verify(email)
+        server.quit()
+        return True
+    except smtplib.SMTPRecipientsRefused:
+        return False

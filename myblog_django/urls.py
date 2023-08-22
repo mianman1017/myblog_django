@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myblog_django_app.views import articlelist_get,article_get
+from myblog_django_app.views import articlelist_get, article_get, user_add
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -23,8 +23,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("articlelist/get/", articlelist_get),
     path("article/get/", article_get),
+    path("user/add/", user_add),
 
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
