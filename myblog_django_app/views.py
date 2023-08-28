@@ -1,5 +1,5 @@
 from django.http import FileResponse, JsonResponse
-from myblog_django_app.models import ArticleInfo, UserInfo
+from myblog_django_app.models import ArticleInfo, UserInfo, MessageInfo
 from django.views.decorators.csrf import csrf_exempt
 from random import random
 import markdown
@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 # Create your views here.
 
 
+# 文章列表获取接口
 @csrf_exempt
 def articlelist_get(request):
     if request.method == 'POST':
@@ -41,11 +42,12 @@ def articlelist_get(request):
             article_list.append(article_dict)
 
         # 返回 JSON 数据
-        return JsonResponse({'data': article_list, 'success': True})
+        return JsonResponse({'success': True, 'data': article_list})
 
     return JsonResponse({'success': False, 'msg': '不是POST请求'})
 
 
+# 文章获取接口
 @csrf_exempt
 def article_get(request):
     if request.method == 'POST':
@@ -85,7 +87,53 @@ def article_get(request):
         }
 
         # 返回 JSON 数据
-        return JsonResponse({'data': article_dict, 'success': True})
+        return JsonResponse({'success': True, 'data': article_dict})
+
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
+
+
+# 留言列表获取接口
+@csrf_exempt
+def messagelist_get(request):
+    if request.method == 'POST':
+
+        # 取出从偏移值开始的博客文章
+        messages = MessageInfo.objects.all()
+
+        # 构造 JSON 数据
+        message_list = []
+        for message in messages:
+            message_dict = {
+                'id': message.id,
+                'top': message.top,
+                'content': message.content
+            }
+            message_list.append(message_dict)
+
+        # 返回 JSON 数据
+        return JsonResponse({'success': True, 'data': message_list})
+
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
+
+
+# 留言添加接口
+@csrf_exempt
+def message_add(request):
+    if request.method == 'POST':
+
+        message = request.POST.get('message')
+        top = request.POST.get('top')
+        right = request.POST.get('right')
+
+        if message:
+            MessageInfo.objects.create(
+                top=top,
+                right=right,
+                content=message
+            )
+            return JsonResponse({'success': True, 'msg': '添加成功'})
+        else:
+            return JsonResponse({'success': False, 'msg': '检测到信息为空'})
 
     return JsonResponse({'success': False, 'msg': '不是POST请求'})
 

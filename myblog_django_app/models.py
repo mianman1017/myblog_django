@@ -45,3 +45,10 @@ class UserInfo(models.Model):
     name = models.CharField(verbose_name='昵称', max_length=32)
     website = models.CharField(verbose_name='个人网址', max_length=128)
     motto = models.CharField(verbose_name='个性签名', max_length=128)
+
+
+# 留言表
+class MessageInfo(models.Model):
+    top = models.CharField(verbose_name='顶距', max_length=16)
+    right = models.CharField(verbose_name='右距', max_length=16, null=True)
+    content = models.CharField(verbose_name='内容', max_length=1024)

@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myblog_django_app.views import articlelist_get, article_get, user_add
+from myblog_django_app.views import (
+    articlelist_get,
+    article_get,
+    user_add,
+    messagelist_get,
+    message_add
+)
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,6 +30,8 @@ urlpatterns = [
     path("articlelist/get/", articlelist_get),
     path("article/get/", article_get),
     path("user/add/", user_add),
+    path("messagelist/get/", messagelist_get),
+    path("message/add/", message_add)
 
 ]
 
