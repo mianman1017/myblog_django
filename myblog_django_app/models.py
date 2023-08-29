@@ -12,7 +12,7 @@ class ArticleInfo(models.Model):
     author = models.CharField(verbose_name='作者', max_length=16)
     title = models.CharField(verbose_name='标题', max_length=100)
     img = models.ImageField(verbose_name='图像', upload_to='ArticlePhotos',
-                            default='myblog_django/media/ArticlePhotos/default.png')
+                            default='ArticlePhotos/default.png')
     body = MDTextField(verbose_name='内容')
     summary = models.CharField(verbose_name="摘要", max_length=100)
     tags = models.TextField(

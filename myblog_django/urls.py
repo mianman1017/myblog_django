@@ -17,8 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from myblog_django_app.views import (
     articlelist_get,
+    articlelist_tag_get,
     article_get,
-    user_add,
     messagelist_get,
     message_add
 )
@@ -28,10 +28,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("articlelist/get/", articlelist_get),
+    path("articlelist/tag/get/", articlelist_tag_get),
     path("article/get/", article_get),
-    path("user/add/", user_add),
     path("messagelist/get/", messagelist_get),
-    path("message/add/", message_add)
+    path("message/add/", message_add),
+
 
 ]
 

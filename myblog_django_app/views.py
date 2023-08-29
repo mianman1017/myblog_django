@@ -47,6 +47,44 @@ def articlelist_get(request):
     return JsonResponse({'success': False, 'msg': '不是POST请求'})
 
 
+@csrf_exempt
+def articlelist_tag_get(request):
+    if request.method == 'POST':
+        offset = int(request.POST.get('offset', 0))
+        tag = request.POST.get('tag', '')
+        if tag:
+            articles = ArticleInfo.objects.filter(
+                tags__contains=tag).all()[offset:offset+5]
+
+            # 构造 JSON 数据
+            article_list = []
+            for article in articles:
+                tags = article.tags.split(',') if article.tags else []
+
+                article_dict = {
+                    'id': article.id,
+                    'weight': article.weight,
+                    'author': article.author,
+                    'title': article.title,
+                    'img': article.get_imgUrl(),
+                    'body': article.body,
+                    'summary': article.summary,
+                    'tags': tags,
+                    'commentCounts': article.commentCounts,
+                    'viewCounts': article.viewCounts,
+                    'createDate': article.createDate.strftime('%Y-%m-%d'),
+                    'updateDate': article.updateDate.strftime('%Y-%m-%d'),
+                }
+                article_list.append(article_dict)
+
+            # 返回 JSON 数据
+            return JsonResponse({'success': True, 'data': article_list})
+        else:
+            return JsonResponse({'success': False, 'msg': '结果为空'})
+
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
+
+
 # 文章获取接口
 @csrf_exempt
 def article_get(request):
@@ -66,9 +104,29 @@ def article_get(request):
         md = markdown.Markdown(extensions=[
             'markdown.extensions.extra',
             'markdown.extensions.codehilite',
-            'markdown.extensions.toc'
+            'markdown.extensions.toc',
         ])
-        body = md.convert(article.body)
+
+        text = article.body
+
+        body = md.convert(text)
+
+        all_latex = re.findall("\$\$(.*?)\$\$", body, re.S)
+
+        for latex in all_latex:
+            # print(latex)
+            body = body.replace(
+                '<p>$${}$$</p>'.format(latex), '<div style="width: 100%;text-align:center"><img src="https://latex.codecogs.com/svg.latex?{}"></div>'.format(latex))
+
+        all_latex = re.findall("\$(.*?)\$", body, re.S)
+
+        for latex in all_latex:
+            # print(latex)
+            body = body.replace(
+                '${}$'.format(latex), '<img style="position:relative;top:5px;" src="https://latex.codecogs.com/svg.latex?{}">'.format(latex))
+
+        # print(body)
+
         # print(body)
         article_dict = {
             'id': article.id,
@@ -136,38 +194,3 @@ def message_add(request):
             return JsonResponse({'success': False, 'msg': '检测到信息为空'})
 
     return JsonResponse({'success': False, 'msg': '不是POST请求'})
-
-
-# 邮箱格式验证的正则表达式
-EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
-
-
-@csrf_exempt
-def user_add(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        # 检查邮箱格式是否有效
-        if not re.match(EMAIL_REGEX, email):
-            return JsonResponse({'success': False, 'message': '邮箱格式错误'})
-
-        # 使用SMTP验证检查邮箱是否真实存在
-        if not is_valid_email(email):
-            return JsonResponse({'success': False, 'message': '邮箱不存在'})
-
-        UserInfo.objects.create(email=email, password=password)
-
-        return JsonResponse({'success': True, 'message': '成功创建用户'})
-
-    return JsonResponse({'success': False, 'message': '不是POST请求'})
-
-
-def is_valid_email(email):
-    try:
-        server = smtplib.SMTP('smtp.aliyun.com')  # 替换为你的SMTP服务器
-        server.verify(email)
-        server.quit()
-        return True
-    except smtplib.SMTPRecipientsRefused:
-        return False
