@@ -135,7 +135,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 
 # 配置文件存储目录
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 配置浏览器访问文件的地址：http://127.0.0.1:8000/media/...
 MEDIA_URL = '/media/'
-
+MEDIA_ADDR = 'http://localhost:8000/media/'

@@ -1,5 +1,6 @@
 from django.db import models
 from mdeditor.fields import MDTextField
+from myblog_django.settings import MEDIA_ADDR
 import markdown
 import datetime
 # Create your models here.
@@ -11,7 +12,7 @@ class ArticleInfo(models.Model):
     weight = models.IntegerField(verbose_name='置顶', default=0)
     author = models.CharField(verbose_name='作者', max_length=16)
     title = models.CharField(verbose_name='标题', max_length=100)
-    img = models.ImageField(verbose_name='图像', upload_to='ArticlePhotos',
+    img = models.ImageField(verbose_name='图片', upload_to='ArticlePhotos',
                             default='ArticlePhotos/default.png')
     body = MDTextField(verbose_name='内容')
     summary = models.CharField(verbose_name="摘要", max_length=100)
@@ -32,7 +33,6 @@ class ArticleInfo(models.Model):
         return self.title
 
     def get_imgUrl(self):
-        MEDIA_ADDR = 'http://localhost:8000/media/'
         return MEDIA_ADDR + str(self.img)
 
 
@@ -52,3 +52,36 @@ class MessageInfo(models.Model):
     top = models.CharField(verbose_name='顶距', max_length=16)
     right = models.CharField(verbose_name='右距', max_length=16, null=True)
     content = models.CharField(verbose_name='内容', max_length=1024)
+
+
+# 说说表
+class PostInfo(models.Model):
+    avatar = models.ImageField(verbose_name='头像', upload_to='Avatars',
+                               default='Avatars/default.jpg')
+    name = models.CharField(verbose_name="昵称", max_length=32)
+    content = models.TextField(
+        verbose_name='内容', blank=True, null=True)
+    createTime = models.DateTimeField(
+        verbose_name="时间", default=datetime.datetime.now())
+
+    def get_avatarUrl(self):
+        return MEDIA_ADDR + str(self.avatar)
+    
+    # 按优先置顶、其次创建时间的方式倒序排列
+    class Meta:
+        ordering = ('-createTime',)
+
+
+# 说说图片表
+class ImgOfPostInfo(models.Model):
+    postid = models.IntegerField(verbose_name='博客ID')
+    img = models.ImageField(verbose_name='图片', upload_to='PostPhotos',
+                            default='PostPhotos/default.png')
+
+    def get_imgUrl(self):
+        return MEDIA_ADDR + str(self.img)
+
+
+# 友链表
+class FriendsInfo(models.Model):
+    friend = models.CharField(verbose_name="友链", max_length=256)

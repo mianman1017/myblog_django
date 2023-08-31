@@ -18,9 +18,11 @@ from django.urls import path
 from myblog_django_app.views import (
     articlelist_get,
     articlelist_tag_get,
+    articlelist_search_get,
     article_get,
     messagelist_get,
-    message_add
+    message_add,
+    postlist_get
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -29,9 +31,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("articlelist/get/", articlelist_get),
     path("articlelist/tag/get/", articlelist_tag_get),
+    path("articlelist/search/get/", articlelist_search_get),
     path("article/get/", article_get),
     path("messagelist/get/", messagelist_get),
     path("message/add/", message_add),
+    path("postlist/get/", postlist_get)
 
 
 ]
