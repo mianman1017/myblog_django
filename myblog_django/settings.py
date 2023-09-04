@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-ty$bkiigl05hc+_3h$ud0h*4dks#3ape=4o2pjx#e=9zptb-5c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -133,6 +133,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# 即前端打包文件所在位置
+STATICFILES_DIRS = [
+    os.path.join("D:\WebProject\myblog", "myblog/dist/"),
+]
+
+# 新增项。静态文件收集目录
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 # 配置文件存储目录
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

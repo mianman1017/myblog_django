@@ -8,7 +8,6 @@ import datetime
 
 # 文章表
 class ArticleInfo(models.Model):
-
     weight = models.IntegerField(verbose_name='置顶', default=0)
     author = models.CharField(verbose_name='作者', max_length=16)
     title = models.CharField(verbose_name='标题', max_length=100)
@@ -66,7 +65,7 @@ class PostInfo(models.Model):
 
     def get_avatarUrl(self):
         return MEDIA_ADDR + str(self.avatar)
-    
+
     # 按优先置顶、其次创建时间的方式倒序排列
     class Meta:
         ordering = ('-createTime',)
@@ -84,4 +83,23 @@ class ImgOfPostInfo(models.Model):
 
 # 友链表
 class FriendsInfo(models.Model):
-    friend = models.CharField(verbose_name="友链", max_length=256)
+    name = models.CharField(verbose_name="名称", max_length=32, null=True)
+    intro = models.CharField(verbose_name="介绍", max_length=128, null=True)
+    img = models.ImageField(verbose_name='图片', upload_to='FriendsPhotos',
+                            default='FriendsPhotos/default.png')
+    link = models.CharField(verbose_name="链接", max_length=256, null=True)
+
+    def get_imgUrl(self):
+        return MEDIA_ADDR + str(self.img)
+
+
+# 评论表
+class CommentInfo(models.Model):
+    articleid = models.IntegerField(verbose_name='文章id')
+    content = models.CharField(verbose_name='内容', max_length=1024)
+    createTime = models.DateTimeField(
+        verbose_name="时间", default=datetime.datetime.now())
+
+    # 按优先置顶、其次创建时间的方式倒序排列
+    class Meta:
+        ordering = ('-createTime',)

@@ -68,10 +68,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=32, verbose_name="昵称")),
-                ("content", models.TextField(blank=True, null=True, verbose_name="内容")),
+                ("content", models.TextField(
+                    blank=True, null=True, verbose_name="内容")),
                 (
                     "createTime",
-                    models.TimeField(default="2023-08-31 16:34", verbose_name="时间"),
+                    models.TimeField(
+                        default="2023-08-31 16:34", verbose_name="时间"),
                 ),
             ],
         ),

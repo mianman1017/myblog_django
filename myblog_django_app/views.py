@@ -1,12 +1,23 @@
 from django.http import FileResponse, JsonResponse
-from myblog_django_app.models import ArticleInfo, UserInfo, MessageInfo, PostInfo, ImgOfPostInfo
+from myblog_django_app.models import (
+    ArticleInfo,
+    UserInfo,
+    MessageInfo,
+    PostInfo,
+    ImgOfPostInfo,
+    FriendsInfo,
+    CommentInfo
+)
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from random import random
 import markdown
 import re
 import smtplib
+import datetime
 from email.mime.text import MIMEText
+from django.utils.text import slugify
+from markdown.extensions.toc import TocExtension
 
 # Create your views here.
 
@@ -24,6 +35,7 @@ def articlelist_get(request):
         # 构造 JSON 数据
         article_list = []
         for article in articles:
+            # print(article)
             tags = article.tags.split(',') if article.tags else []
 
             article_dict = {
@@ -48,6 +60,22 @@ def articlelist_get(request):
     return JsonResponse({'success': False, 'msg': '不是POST请求'})
 
 
+@csrf_exempt
+def article_view_add(request):
+    if request.method == 'POST':
+        id = int(request.POST.get('id', 0))
+        print(id)
+
+        viewCounts = ArticleInfo.objects.filter(id=id).first().viewCounts
+
+        ArticleInfo.objects.filter(id=id).update(viewCounts=viewCounts+1)
+
+        # 返回 JSON 数据
+        return JsonResponse({'success': True, 'msg': '浏览量增加成功'})
+
+    return JsonResponse({'success': False, 'msg': '不是POST请求'})
+
+
 # 文章标签查询接口
 @csrf_exempt
 def articlelist_tag_get(request):
@@ -56,7 +84,7 @@ def articlelist_tag_get(request):
         tag = request.POST.get('tag', '')
         if tag:
             articles = ArticleInfo.objects.filter(
-                tags__contains=tag).all()[offset:offset+5]
+                tags__contains=tag).all()
 
             # 构造 JSON 数据
             article_list = []
@@ -96,12 +124,12 @@ def articlelist_search_get(request):
 
         q1 = Q()
         q1.connector = 'OR'
-        q1.children.append(('title__contains', _input))
-        q1.children.append(('tags__contains', _input))
-        q1.children.append(('body__contains', _input))
+        q1.children.append(('title__icontains', _input))
+        q1.children.append(('tags__icontains', _input))
+        q1.children.append(('body__icontains', _input))
 
         if _input:
-            articles = ArticleInfo.objects.filter(q1).all()[offset:offset+5]
+            articles = ArticleInfo.objects.filter(q1).all()
 
             # 构造 JSON 数据
             article_list = []
@@ -151,7 +179,7 @@ def article_get(request):
         md = markdown.Markdown(extensions=[
             'markdown.extensions.extra',
             'markdown.extensions.codehilite',
-            'markdown.extensions.toc',
+            TocExtension(slugify=slugify),
         ])
 
         text = article.body
@@ -163,14 +191,14 @@ def article_get(request):
         for latex in all_latex:
             # print(latex)
             body = body.replace(
-                '<p>$${}$$</p>'.format(latex), '<div style="width: 100%;text-align:center"><img src="https://latex.codecogs.com/svg.latex?{}"></div>'.format(latex))
+                '<p>$${}$$</p>'.format(latex), '<div style="width: 100%;text-align:center"><img id="latex" src="https://www.zhihu.com/equation?tex={}"></div>'.format(latex))
 
         all_latex = re.findall("\$(.*?)\$", body, re.S)
 
         for latex in all_latex:
             # print(latex)
             body = body.replace(
-                '${}$'.format(latex), '<img style="position:relative;top:5px;" src="https://latex.codecogs.com/svg.latex?{}">'.format(latex))
+                '${}$'.format(latex), '<img id="latex" style="vertical-align:middle" src="https://www.zhihu.com/equation?tex={}">'.format(latex))
 
         # print(body)
 
@@ -244,8 +272,6 @@ def message_add(request):
 
 
 # 博客列表获取接口
-
-
 @csrf_exempt
 def postlist_get(request):
     if request.method == 'POST':
@@ -265,12 +291,72 @@ def postlist_get(request):
                 'avatar': post.get_avatarUrl(),
                 'name': post.name,
                 'content': post.content,
-                'createTime': post.createTime,
+                'createTime': post.createTime.strftime("%Y-%m-%d %H:%M"),
                 'imgs': img_list
             }
-
             post_list.append(post_dict)
 
         return JsonResponse({'success': True, 'data': post_list})
+
+    return JsonResponse({'success': False, 'msg': '不是post请求'})
+
+
+# 友链列表获取接口
+@csrf_exempt
+def friendlist_get(request):
+    if request.method == 'POST':
+
+        # offset = int(request.POST.get('offset', 0))
+        friends = FriendsInfo.objects.all()
+
+        friend_list = []
+        for friend in friends:
+            friend_list.append({
+                'link': friend.link,
+                'img': friend.get_imgUrl(),
+                'intro': friend.intro,
+                'name': friend.name
+            })
+
+        return JsonResponse({'success': True, 'data': friend_list})
+
+    return JsonResponse({'success': False, 'msg': '不是post请求'})
+
+
+# 评论列表获取接口
+@csrf_exempt
+def commentlist_get(request):
+    if request.method == 'POST':
+
+        id = int(request.POST.get('id', 0))
+        comments = CommentInfo.objects.filter(articleid=id).all()
+
+        comment_list = []
+        for comment in comments:
+            comment_list.append({
+                'createTime': comment.createTime.strftime("%Y-%m-%d %H:%M"),
+                'content': comment.content,
+            })
+
+        return JsonResponse({'success': True, 'data': comment_list})
+
+    return JsonResponse({'success': False, 'msg': '不是post请求'})
+
+
+# 评论添加接口
+@csrf_exempt
+def comment_add(request):
+    if request.method == 'POST':
+
+        id = int(request.POST.get('id', 0))
+        content = request.POST.get('content')
+        coummentCounts = ArticleInfo.objects.filter(
+            id=id).first().commentCounts
+        ArticleInfo.objects.filter(id=id).update(
+            commentCounts=coummentCounts+1)
+        CommentInfo.objects.create(
+            articleid=id, content=content)
+
+        return JsonResponse({'success': True, 'msg': '添加成功'})
 
     return JsonResponse({'success': False, 'msg': '不是post请求'})

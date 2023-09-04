@@ -20,9 +20,13 @@ from myblog_django_app.views import (
     articlelist_tag_get,
     articlelist_search_get,
     article_get,
+    article_view_add,
     messagelist_get,
     message_add,
-    postlist_get
+    postlist_get,
+    friendlist_get,
+    commentlist_get,
+    comment_add
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -33,9 +37,13 @@ urlpatterns = [
     path("articlelist/tag/get/", articlelist_tag_get),
     path("articlelist/search/get/", articlelist_search_get),
     path("article/get/", article_get),
+    path("article/view/add/", article_view_add),
     path("messagelist/get/", messagelist_get),
     path("message/add/", message_add),
-    path("postlist/get/", postlist_get)
+    path("postlist/get/", postlist_get),
+    path("friendlist/get/", friendlist_get),
+    path("commentlist/get/", commentlist_get),
+    path("comment/add/", comment_add)
 
 
 ]
