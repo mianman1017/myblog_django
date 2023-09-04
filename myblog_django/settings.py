@@ -135,7 +135,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # 即前端打包文件所在位置
 STATICFILES_DIRS = [
-    os.path.join("D:\WebProject\myblog", "myblog/dist/"),
+    os.path.join(BASE_DIR, "frontend/dist/"),
 ]
 
 # 新增项。静态文件收集目录
