@@ -59,7 +59,7 @@ ROOT_URLCONF = "myblog_django.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['./dist',],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,6 +126,14 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# # 即前端打包文件所在位置
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "./dist/static"),
+# ]
+
+# # 新增项。静态文件收集目录
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -133,13 +141,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-# 即前端打包文件所在位置
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend/dist/"),
-]
-
-# 新增项。静态文件收集目录
-STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 # 配置文件存储目录
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

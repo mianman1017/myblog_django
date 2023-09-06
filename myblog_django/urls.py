@@ -30,6 +30,7 @@ from myblog_django_app.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -43,7 +44,7 @@ urlpatterns = [
     path("postlist/get/", postlist_get),
     path("friendlist/get/", friendlist_get),
     path("commentlist/get/", commentlist_get),
-    path("comment/add/", comment_add)
+    path("comment/add/", comment_add),
 
 
 ]
