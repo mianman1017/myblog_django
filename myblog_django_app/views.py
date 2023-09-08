@@ -311,6 +311,7 @@ def friendlist_get(request):
 
         friend_list = []
         for friend in friends:
+            # print(friend.get_img_data())
             friend_list.append({
                 'link': friend.link,
                 'img': friend.get_imgUrl(),

@@ -59,7 +59,7 @@ ROOT_URLCONF = "myblog_django.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['./dist',],
+        "DIRS": [''],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -114,11 +114,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,9 +142,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-
 # 配置文件存储目录
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 配置浏览器访问文件的地址：http://127.0.0.1:8000/media/...
 MEDIA_URL = '/media/'
-MEDIA_ADDR = 'http://localhost:8000/media/'
+MEDIA_ADDR = 'http://111.229.204.126:8000/media/'
