@@ -127,6 +127,8 @@ USE_TZ = False
 
 STATIC_URL = "static/"
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # # 即前端打包文件所在位置
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "./dist/static"),

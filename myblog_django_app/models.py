@@ -35,17 +35,6 @@ class ArticleInfo(models.Model):
         return MEDIA_ADDR + str(self.img)
 
 
-# 用户表
-class UserInfo(models.Model):
-    email = models.CharField(verbose_name='邮箱', max_length=32)
-    password = models.CharField(verbose_name='密码', max_length=32)
-    avatar = models.ImageField(verbose_name='头像', upload_to='PersonalPhotos',
-                               default='myblog_django/media/PersonalPhotos/avatar.jpg')
-    name = models.CharField(verbose_name='昵称', max_length=32)
-    website = models.CharField(verbose_name='个人网址', max_length=128)
-    motto = models.CharField(verbose_name='个性签名', max_length=128)
-
-
 # 留言表
 class MessageInfo(models.Model):
     top = models.CharField(verbose_name='顶距', max_length=16)

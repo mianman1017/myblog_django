@@ -1,7 +1,6 @@
 from django.http import FileResponse, JsonResponse
 from myblog_django_app.models import (
     ArticleInfo,
-    UserInfo,
     MessageInfo,
     PostInfo,
     ImgOfPostInfo,
@@ -84,7 +83,7 @@ def articlelist_tag_get(request):
         tag = request.POST.get('tag', '')
         if tag:
             articles = ArticleInfo.objects.filter(
-                tags__contains=tag).all()
+                tags__contains=tag).all()[offset:offset+5]
 
             # 构造 JSON 数据
             article_list = []
@@ -129,7 +128,8 @@ def articlelist_search_get(request):
         q1.children.append(('body__icontains', _input))
 
         if _input:
-            articles = ArticleInfo.objects.filter(q1).all()
+            articles = ArticleInfo.objects.filter(q1).all()[offset:offset+5]
+            # print(articles)
 
             # 构造 JSON 数据
             article_list = []
@@ -186,12 +186,14 @@ def article_get(request):
 
         body = md.convert(text)
 
+        body = body.replace('<img', '<img class="md-image"')
+
         all_latex = re.findall("\$\$(.*?)\$\$", body, re.S)
 
         for latex in all_latex:
             # print(latex)
             body = body.replace(
-                '<p>$${}$$</p>'.format(latex), '<div style="width: 100%;text-align:center"><img id="latex" src="https://www.zhihu.com/equation?tex={}"></div>'.format(latex))
+                '$${}$$'.format(latex), '<div style="width: 100%;text-align:center"><img id="latex" src="https://www.zhihu.com/equation?tex={}"></div>'.format(latex))
 
         all_latex = re.findall("\$(.*?)\$", body, re.S)
 
