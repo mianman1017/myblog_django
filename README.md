@@ -3,7 +3,7 @@
 
 ### 博客系统
 
-访问地址：http://111.229.204.126/ （域名还在备案中）
+访问地址：http://www.mianman.site/
 
 前端源码地址：https://github.com/NKUmianman/myblog
 
