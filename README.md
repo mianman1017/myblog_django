@@ -13,11 +13,11 @@
 
 白天主题：
 
-![image-20230909093129122](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/image-20230909093129122.png)
+![20231001-192537](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/20231001-192537.jpg)
 
 黑夜主题：
 
-![image-20230909093155811](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/image-20230909093155811.png)
+![20231001-192545](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/20231001-192545.jpg)
 
 ### 想法
 
