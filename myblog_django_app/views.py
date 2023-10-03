@@ -16,6 +16,7 @@ import smtplib
 import datetime
 from email.mime.text import MIMEText
 from django.utils.text import slugify
+from django.utils.timezone import now
 from markdown.extensions.toc import TocExtension
 
 # Create your views here.

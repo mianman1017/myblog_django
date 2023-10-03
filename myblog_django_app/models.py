@@ -1,6 +1,7 @@
 from django.db import models
 from mdeditor.fields import MDTextField
 from myblog_django.settings import MEDIA_ADDR
+from django.utils.timezone import now
 import markdown
 import datetime
 # Create your models here.
@@ -26,7 +27,7 @@ class ArticleInfo(models.Model):
 
     # 按优先置顶、其次创建时间的方式倒序排列
     class Meta:
-        ordering = ('-weight', '-createDate',)
+        ordering = ('-weight', '-createDate', '-id')
 
     def __str__(self):
         return self.title
@@ -50,7 +51,7 @@ class PostInfo(models.Model):
     content = models.TextField(
         verbose_name='内容', blank=True, null=True)
     createTime = models.DateTimeField(
-        verbose_name="时间", default=datetime.datetime.now())
+        verbose_name="时间", default=now)
 
     def get_avatarUrl(self):
         return MEDIA_ADDR + str(self.avatar)
@@ -87,7 +88,7 @@ class CommentInfo(models.Model):
     articleid = models.IntegerField(verbose_name='文章id')
     content = models.CharField(verbose_name='内容', max_length=1024)
     createTime = models.DateTimeField(
-        verbose_name="时间", default=datetime.datetime.now())
+        verbose_name="时间", default=now)
 
     # 按优先置顶、其次创建时间的方式倒序排列
     class Meta:

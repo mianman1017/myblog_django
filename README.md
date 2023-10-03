@@ -1,9 +1,11 @@
+
 # myblog_django
+
 个人博客项目后端
 
 ### 博客系统
 
-访问地址：http://111.229.204.126/ （域名还在备案中）
+访问地址：http://www.mianman.site/
 
 前端源码地址：https://github.com/NKUmianman/myblog
 
@@ -13,11 +15,11 @@
 
 白天主题：
 
-![image-20230909093129122](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/image-20230909093129122.png)
+![20231001-192537](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/20231001-192537.jpg)
 
 黑夜主题：
 
-![image-20230909093155811](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/image-20230909093155811.png)
+![20231001-192545](https://gitee.com/mianmann/drawing-bed-warehouse/raw/master/img/20231001-192545.jpg)
 
 ### 想法
 
